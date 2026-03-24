@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Credipt Launcher | PRIMSZONE - Portal Oficial</title>
+    <link rel="icon" type="image/png" href="electron-logo.png">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;700;900&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -13,7 +14,7 @@
             --accent-glow: rgba(168, 85, 247, 0.7);
             --bg-dark: #020617;
             --text-light: #f8fafc;
-            --container-width: 1600px; /* Más grande y espacioso */
+            --container-width: 1400px; /* Ancho máximo para contenido */
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
@@ -24,7 +25,7 @@
             overflow-x: hidden;
             background: radial-gradient(ellipse at bottom, #1b2735 0%, #020617 100%);
             min-height: 100vh;
-            font-size: 18px; /* Texto base más grande */
+            font-size: 18px;
         }
 
         /* --- Estrellas Animadas (Fondo) --- */
@@ -40,7 +41,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 25px 50px;
+            padding: 20px 50px;
             background: rgba(2, 6, 23, 0.7);
             backdrop-filter: blur(15px);
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
@@ -50,8 +51,8 @@
             z-index: 100;
         }
 
-        .logo-container { display: flex; align-items: center; gap: 18px; font-weight: 900; font-size: 28px; letter-spacing: 2px; text-transform: uppercase; text-shadow: 0 0 10px rgba(255,255,255,0.3);}
-        .logo-container svg { width: 50px; height: 50px; animation: spin 15s linear infinite; }
+        .logo-container { display: flex; align-items: center; gap: 15px; font-weight: 900; font-size: 26px; letter-spacing: 2px; text-transform: uppercase; text-shadow: 0 0 10px rgba(255,255,255,0.3);}
+        .logo-container img { width: 45px; height: 45px; animation: spin 15s linear infinite; } /* Logo real con animación */
         @keyframes spin { 100% { transform: rotate(360deg); } }
 
         /* --- Hero Section (Inicio) --- */
@@ -61,12 +62,12 @@
             justify-content: center;
             align-items: center;
             text-align: center;
-            padding: 200px 20px 100px; /* Más padding para que se vea más grande */
+            padding: 180px 20px 80px;
             position: relative;
         }
 
         .hero h1 {
-            font-size: 72px; /* Título gigante y moderno */
+            font-size: 68px;
             font-weight: 900;
             margin-bottom: 25px;
             text-transform: uppercase;
@@ -77,15 +78,15 @@
             letter-spacing: 1px;
         }
 
-        .hero p { font-size: 22px; color: #cbd5e1; max-width: 800px; margin-bottom: 50px; line-height: 1.6; font-weight: 300; }
+        .hero p { font-size: 20px; color: #cbd5e1; max-width: 800px; margin-bottom: 45px; line-height: 1.6; font-weight: 300; }
 
         /* --- Botón de Descarga --- */
         .btn-download {
             background: linear-gradient(45deg, var(--primary), var(--accent));
             color: white;
             text-decoration: none;
-            padding: 22px 55px;
-            font-size: 24px;
+            padding: 20px 50px;
+            font-size: 22px;
             font-weight: bold;
             border-radius: 60px;
             box-shadow: 0 0 25px var(--primary-glow);
@@ -98,43 +99,43 @@
             position: relative;
             overflow: hidden;
         }
-        .btn-download:hover { transform: scale(1.08) translateY(-8px); box-shadow: 0 15px 40px var(--primary-glow); }
+        .btn-download:hover { transform: scale(1.06) translateY(-6px); box-shadow: 0 15px 40px var(--primary-glow); }
 
-        .download-info { font-size: 14px; margin-top: 20px; color: #64748b; font-weight: 300;}
+        .download-info { font-size: 14px; margin-top: 18px; color: #64748b; font-weight: 300;}
 
         /* --- Showcase Section (La Joya del Portafolio) --- */
         #showcase-section {
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 100px 20px;
-            perspective: 2000px; /* Perspectiva 3D */
+            padding: 80px 20px;
+            perspective: 2000px;
             position: relative;
         }
 
         .showcase-image-container {
             width: 100%;
-            max-width: 1200px; /* Imagen del launcher gigante */
-            transform: rotateX(5deg) rotateY(15deg) scale(1.05); /* Efecto 3D de entrada */
+            max-width: 1100px; /* Imagen del launcher gigante */
+            transform: rotateX(5deg) rotateY(12deg) scale(1.03); /* Efecto 3D de entrada */
             transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
             position: relative;
         }
-        .showcase-image-container:hover { transform: rotateX(0deg) rotateY(0deg) scale(1.1); } /* Endereza y agranda al hover */
+        .showcase-image-container:hover { transform: rotateX(0deg) rotateY(0deg) scale(1.08); } /* Endereza y agranda al hover */
 
         .showcase-image-container img {
             width: 100%;
             height: auto;
-            border-radius: 25px;
+            border-radius: 20px;
             border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 30px 60px rgba(0, 120, 215, 0.5);
+            box-shadow: 0 25px 55px rgba(0, 120, 215, 0.5);
         }
 
         /* --- Requisitos del Sistema (Integrado en el diseño) --- */
         #requirements-section {
             display: flex;
             justify-content: center;
-            gap: 40px;
-            padding: 100px 20px;
+            gap: 35px;
+            padding: 80px 20px 120px;
             flex-wrap: wrap;
             max-width: var(--container-width);
             margin: 0 auto;
@@ -144,33 +145,33 @@
             background: rgba(255, 255, 255, 0.04);
             border: 1px solid rgba(255, 255, 255, 0.08);
             backdrop-filter: blur(15px);
-            padding: 40px;
-            border-radius: 30px;
-            width: calc(50% - 20px); /* Dos tarjetas grandes */
+            padding: 35px;
+            border-radius: 25px;
+            width: calc(50% - 18px); /* Dos tarjetas grandes */
             text-align: left;
             transition: all 0.3s ease;
         }
-        .requirement-card:hover { transform: translateY(-10px); border-color: var(--primary); background: rgba(255, 255, 255, 0.06); box-shadow: 0 10px 40px rgba(0, 120, 215, 0.2); }
+        .requirement-card:hover { transform: translateY(-8px); border-color: var(--primary); background: rgba(255, 255, 255, 0.06); box-shadow: 0 10px 40px rgba(0, 120, 215, 0.2); }
 
         .requirement-card h3 { 
             color: #38bdf8; 
-            margin-bottom: 25px; 
-            font-size: 26px; 
+            margin-bottom: 22px; 
+            font-size: 24px; 
             font-weight: 700; 
             display: flex; 
             align-items: center; 
-            gap: 15px; 
+            gap: 12px; 
             text-transform: uppercase; 
             letter-spacing: 1px;
         }
-        .requirement-card h3 svg { width: 30px; height: 30px; color: var(--accent); }
+        .requirement-card h3 svg { width: 28px; height: 28px; color: var(--accent); }
 
-        .req-list { list-style: none; font-size: 16px; color: #94a3b8; line-height: 2; }
-        .req-list li { margin-bottom: 8px; }
+        .req-list { list-style: none; font-size: 16px; color: #94a3b8; line-height: 1.9; }
+        .req-list li { margin-bottom: 7px; }
         .req-list li strong { color: white; font-weight: bold; }
 
         /* --- Footer --- */
-        footer { text-align: center; padding: 30px; background: rgba(0,0,0,0.6); font-size: 14px; color: #64748b; border-top: 1px solid rgba(255, 255, 255, 0.05); }
+        footer { text-align: center; padding: 25px; background: rgba(0,0,0,0.6); font-size: 14px; color: #64748b; border-top: 1px solid rgba(255, 255, 255, 0.05); }
     </style>
 </head>
 <body>
@@ -179,11 +180,7 @@
 
     <nav>
         <div class="logo-container">
-            <svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
-                <path fill="#9FEAF9" d="M298.88 775.04a250.88 250.88 0 1 1 426.24-250.88 250.88 250.88 0 0 1-426.24 775.04zm382.72-206.08a206.08 206.08 0 1 0-339.2 206.08 206.08 206.08 0 0 0 339.2-206.08z"/>
-                <path fill="#9FEAF9" d="M512 870.4c-92.16 0-184.32-35.84-256-107.52-143.36-143.36-143.36-378.88 0-522.24 143.36-143.36 378.88-143.36 522.24 0 143.36 143.36 143.36 378.88 0 522.24A358.4 358.4 0 0 1 512 870.4zm0-752.64c-81.92 0-163.84 30.72-225.28 92.16-122.88 122.88-122.88 327.68 0 450.56s327.68 122.88 450.56 0 122.88-327.68 0-450.56c-61.44-61.44-143.36-92.16-225.28-92.16z"/>
-                <circle fill="#9FEAF9" cx="512" cy="512" r="71.68"/>
-            </svg>
+            <img src="electron-logo.png" alt="Electron Logo">
             CREDIPT LAUNCHER
         </div>
     </nav>
@@ -193,7 +190,7 @@
         <p>Una experiencia de Minecraft galáctica, optimizada al máximo. Nuestro launcher diseñado con tecnología Electron te ofrece rendimiento, seguridad y automatización total para que solo te preocupes de jugar.</p>
         
         <a href="https://github.com/sanjti9123981/mc-launcher-versiones2/releases/download/1.3.0/Instalador_Credipt_Launcher.exe" class="btn-download">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
             Descargar Instalador 1.3.0
         </a>
         <p class="download-info">Instalación en un clic | Incluye Java 21 optimizado</p>
@@ -236,34 +233,34 @@
     </footer>
 
     <script>
-        // Generador de Estrellas de Fondo (Mejorado y más variable)
+        // Generador de Estrellas de Fondo (Más variable)
         function initStars() {
             const container = document.getElementById('stars-container');
-            for(let i=0; i<150; i++) { /* Más estrellas */
+            for(let i=0; i<150; i++) {
                 let star = document.createElement('div');
                 star.className = 'star';
-                let size = Math.random() * 4 + 1; /* Tamaños más variables */
+                let size = Math.random() * 4 + 1;
                 star.style.width = size + 'px';
                 star.style.height = size + 'px';
                 star.style.left = Math.random() * 100 + 'vw';
-                star.style.animationDuration = (Math.random() * 5 + 3) + 's'; /* Velocidades variables */
+                star.style.animationDuration = (Math.random() * 6 + 3) + 's';
                 star.style.animationDelay = (Math.random() * 7) + 's';
                 container.appendChild(star);
             }
         }
         initStars();
 
-        // Subutil Parallax Efecto en el Showcase con el mouse
+        // Subutil Parallax Efecto en el Showcase con el mouse (Súper suave)
         const showcase = document.getElementById('hero-showcase');
         document.addEventListener('mousemove', (e) => {
-            let xAxis = (window.innerWidth / 2 - e.pageX) / 40; /* Muy sutil */
-            let yAxis = (window.innerHeight / 2 - e.pageY) / 40;
-            showcase.style.transform = `rotateY(${xAxis}deg) rotateX(${yAxis}deg)`;
+            let xAxis = (window.innerWidth / 2 - e.pageX) / 60;
+            let yAxis = (window.innerHeight / 2 - e.pageY) / 60;
+            showcase.style.transform = `rotateY(${12 + xAxis}deg) rotateX(${5 + yAxis}deg)`;
         });
 
-        // Vuelve a enderezar al quitar el mouse
+        // Vuelve a la posición inicial al quitar el mouse
         showcase.addEventListener('mouseleave', () => {
-            showcase.style.transform = `rotateY(15deg) rotateX(5deg)`;
+            showcase.style.transform = `rotateY(12deg) rotateX(5deg)`;
         });
     </script>
 </body>
