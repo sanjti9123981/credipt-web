@@ -3,37 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Credipt Launcher | PRIMSZONE - Portal Oficial</title>
+    <title>Credipt Launcher | PRIMSZONE</title>
     <link rel="icon" type="image/png" href="electron-logo.png">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
         :root {
             --primary: #0078d7;
-            --primary-glow: rgba(0, 120, 215, 0.7);
             --accent: #a855f7;
-            --accent-glow: rgba(168, 85, 247, 0.7);
             --bg-dark: #020617;
             --text-light: #f8fafc;
-            --container-width: 1400px; /* Ancho máximo para contenido */
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
 
         body {
-            background-color: var(--bg-dark);
+            background: #020617; /* Color sólido primero para velocidad */
+            background: radial-gradient(ellipse at bottom, #1b2735 0%, #020617 100%);
             color: var(--text-light);
             overflow-x: hidden;
-            background: radial-gradient(ellipse at bottom, #1b2735 0%, #020617 100%);
             min-height: 100vh;
-            font-size: 18px;
         }
 
-        /* --- Estrellas Animadas (Fondo) --- */
-        #stars-container { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1; overflow: hidden; }
-        .star { position: absolute; background: white; border-radius: 50%; box-shadow: 0 0 5px white; animation: fall linear infinite; opacity: 0; }
+        /* --- Fondo Optimizado --- */
+        #stars-container { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1; pointer-events: none; }
+        .star { position: absolute; background: white; border-radius: 50%; opacity: 0; will-change: transform; }
+
         @keyframes fall {
-            0% { transform: translateY(-10vh) translateX(0); opacity: 1; }
-            100% { transform: translateY(110vh) translateX(10vw); opacity: 0; }
+            0% { transform: translateY(-10vh); opacity: 1; }
+            100% { transform: translateY(110vh); opacity: 0; }
         }
 
         /* --- Navbar --- */
@@ -41,137 +38,106 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 20px 50px;
-            background: rgba(2, 6, 23, 0.7);
-            backdrop-filter: blur(15px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 15px 5%;
+            background: rgba(2, 6, 23, 0.8);
+            backdrop-filter: blur(10px);
             position: fixed;
             width: 100%;
             top: 0;
             z-index: 100;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
         }
 
-        .logo-container { display: flex; align-items: center; gap: 15px; font-weight: 900; font-size: 26px; letter-spacing: 2px; text-transform: uppercase; text-shadow: 0 0 10px rgba(255,255,255,0.3);}
-        .logo-container img { width: 45px; height: 45px; animation: spin 15s linear infinite; } /* Logo real con animación */
-        @keyframes spin { 100% { transform: rotate(360deg); } }
+        .logo-container { display: flex; align-items: center; gap: 12px; font-weight: 900; font-size: 22px; text-transform: uppercase; }
+        .logo-container img { width: 35px; height: 35px; }
 
-        /* --- Hero Section (Inicio) --- */
+        /* --- Hero Section --- */
         .hero {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
+            padding: 160px 20px 60px;
             text-align: center;
-            padding: 180px 20px 80px;
-            position: relative;
+            max-width: 1200px;
+            margin: 0 auto;
         }
 
         .hero h1 {
-            font-size: 68px;
+            font-size: clamp(40px, 8vw, 70px);
             font-weight: 900;
-            margin-bottom: 25px;
-            text-transform: uppercase;
-            background: linear-gradient(45deg, #4facfe 0%, #00f2fe 100%);
+            background: linear-gradient(45deg, #4facfe, #00f2fe);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            text-shadow: 0 0 35px rgba(0, 242, 254, 0.5);
-            letter-spacing: 1px;
+            margin-bottom: 20px;
         }
 
-        .hero p { font-size: 20px; color: #cbd5e1; max-width: 800px; margin-bottom: 45px; line-height: 1.6; font-weight: 300; }
+        .hero p { font-size: 18px; color: #94a3b8; max-width: 700px; margin: 0 auto 40px; }
 
-        /* --- Botón de Descarga --- */
+        /* --- Botón --- */
         .btn-download {
             background: linear-gradient(45deg, var(--primary), var(--accent));
             color: white;
             text-decoration: none;
-            padding: 20px 50px;
-            font-size: 22px;
+            padding: 18px 45px;
+            font-size: 20px;
             font-weight: bold;
-            border-radius: 60px;
-            box-shadow: 0 0 25px var(--primary-glow);
-            transition: all 0.3s ease;
+            border-radius: 50px;
             display: inline-flex;
             align-items: center;
-            gap: 12px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            position: relative;
-            overflow: hidden;
+            gap: 10px;
+            transition: transform 0.2s;
+            box-shadow: 0 10px 30px rgba(0, 120, 215, 0.3);
         }
-        .btn-download:hover { transform: scale(1.06) translateY(-6px); box-shadow: 0 15px 40px var(--primary-glow); }
+        .btn-download:hover { transform: translateY(-3px) scale(1.02); }
 
-        .download-info { font-size: 14px; margin-top: 18px; color: #64748b; font-weight: 300;}
-
-        /* --- Showcase Section (La Joya del Portafolio) --- */
+        /* --- Showcase Optimizado --- */
         #showcase-section {
+            padding: 40px 20px;
             display: flex;
             justify-content: center;
-            align-items: center;
-            padding: 80px 20px;
-            perspective: 2000px;
-            position: relative;
+            perspective: 1000px;
         }
 
-        .showcase-image-container {
+        .showcase-box {
             width: 100%;
-            max-width: 1100px; /* Imagen del launcher gigante */
-            transform: rotateX(5deg) rotateY(12deg) scale(1.03); /* Efecto 3D de entrada */
-            transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
-            position: relative;
+            max-width: 1000px;
+            will-change: transform;
+            transition: transform 0.4s cubic-bezier(0.2, 0, 0.2, 1);
+            transform: rotateX(5deg);
         }
-        .showcase-image-container:hover { transform: rotateX(0deg) rotateY(0deg) scale(1.08); } /* Endereza y agranda al hover */
 
-        .showcase-image-container img {
+        .showcase-box img {
             width: 100%;
-            height: auto;
+            border-radius: 15px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            border: 1px solid rgba(255,255,255,0.1);
+            display: block;
+        }
+
+        /* --- Requisitos --- */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            max-width: 1200px;
+            margin: 60px auto;
+            padding: 0 20px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.03);
+            padding: 30px;
             border-radius: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 25px 55px rgba(0, 120, 215, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.05);
         }
 
-        /* --- Requisitos del Sistema (Integrado en el diseño) --- */
-        #requirements-section {
-            display: flex;
-            justify-content: center;
-            gap: 35px;
-            padding: 80px 20px 120px;
-            flex-wrap: wrap;
-            max-width: var(--container-width);
-            margin: 0 auto;
+        .card h3 { color: #38bdf8; margin-bottom: 15px; font-size: 20px; }
+        .card ul { list-style: none; color: #94a3b8; line-height: 1.8; }
+        .card ul li strong { color: white; }
+
+        footer { padding: 40px; text-align: center; color: #475569; font-size: 14px; }
+
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 35px; }
+            nav { padding: 15px 20px; }
         }
-
-        .requirement-card {
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            backdrop-filter: blur(15px);
-            padding: 35px;
-            border-radius: 25px;
-            width: calc(50% - 18px); /* Dos tarjetas grandes */
-            text-align: left;
-            transition: all 0.3s ease;
-        }
-        .requirement-card:hover { transform: translateY(-8px); border-color: var(--primary); background: rgba(255, 255, 255, 0.06); box-shadow: 0 10px 40px rgba(0, 120, 215, 0.2); }
-
-        .requirement-card h3 { 
-            color: #38bdf8; 
-            margin-bottom: 22px; 
-            font-size: 24px; 
-            font-weight: 700; 
-            display: flex; 
-            align-items: center; 
-            gap: 12px; 
-            text-transform: uppercase; 
-            letter-spacing: 1px;
-        }
-        .requirement-card h3 svg { width: 28px; height: 28px; color: var(--accent); }
-
-        .req-list { list-style: none; font-size: 16px; color: #94a3b8; line-height: 1.9; }
-        .req-list li { margin-bottom: 7px; }
-        .req-list li strong { color: white; font-weight: bold; }
-
-        /* --- Footer --- */
-        footer { text-align: center; padding: 25px; background: rgba(0,0,0,0.6); font-size: 14px; color: #64748b; border-top: 1px solid rgba(255, 255, 255, 0.05); }
     </style>
 </head>
 <body>
@@ -180,87 +146,80 @@
 
     <nav>
         <div class="logo-container">
-            <img src="electron-logo.png" alt="Electron Logo">
-            CREDIPT LAUNCHER
+            <img src="electron-logo.png" alt="Logo">
+            <span>CREDIPT</span>
         </div>
     </nav>
 
     <section class="hero">
-        <h1>Tu Portal Profesional a PRIMSZONE</h1>
-        <p>Una experiencia de Minecraft galáctica, optimizada al máximo. Nuestro launcher diseñado con tecnología Electron te ofrece rendimiento, seguridad y automatización total para que solo te preocupes de jugar.</p>
+        <h1>PRIMSZONE Launcher</h1>
+        <p>El acceso más rápido y seguro a tu servidor de Minecraft. Optimización nativa y diseño moderno en una sola aplicación.</p>
         
         <a href="https://github.com/sanjti9123981/mc-launcher-versiones2/releases/download/1.3.0/Instalador_Credipt_Launcher.exe" class="btn-download">
-            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-            Descargar Instalador 1.3.0
+            Descargar V1.3.0
         </a>
-        <p class="download-info">Instalación en un clic | Incluye Java 21 optimizado</p>
     </section>
 
     <section id="showcase-section">
-        <div class="showcase-image-container" id="hero-showcase">
-            <img src="launcher-main.png" alt="Credipt Launcher - Interfaz Principal">
+        <div class="showcase-box" id="tilt-box">
+            <img src="launcher-main.png" alt="Preview" loading="eager">
         </div>
     </section>
 
-    <section id="requirements-section">
-        <div class="requirement-card">
-            <h3>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 16.5c-1.5 1.26-2 3.36-2 3.36.14.3.4.55.73.66.17.06.34.1.53.1 1.93 0 3.76-.79 5.07-2.1l9.16-9.16a2.98 2.98 0 0 0 0-4.22c-1.16-1.16-3.06-1.16-4.22 0l-9.16 9.16Z"></path><path d="M12.5 8.5L16 12"></path></svg>
-                Requisitos Recomendados
-            </h3>
-            <ul class="req-list">
-                <li><strong>Procesador (CPU):</strong> Intel Core i5 (10ma Gen) o AMD Ryzen 5</li>
-                <li><strong>RAM Total:</strong> 8 GB o 12 GB</li>
-                <li><strong>RAM Asignada:</strong> 6 GB u 8 GB</li>
-                <li><strong>Tarjeta Gráfica:</strong> Dedicada o Integrada potente (Radeon Vega 10)</li>
-                <li style="margin-top: 15px; font-style: italic; color: #64748b;">La experiencia ideal para Create y muchos mods.</li>
+    <div class="grid">
+        <div class="card">
+            <h3>Recomendado</h3>
+            <ul>
+                <li><strong>CPU:</strong> i5 10ma / Ryzen 5</li>
+                <li><strong>RAM:</strong> 8GB - 12GB</li>
+                <li><strong>GPU:</strong> Radeon Vega / GTX</li>
             </ul>
         </div>
-        <div class="requirement-card">
-            <h3>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19V5a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2Z"></path><path d="M6 12h12"></path><path d="M10 8h1"></path><path d="M14 8h1"></path></svg>
-                Requisitos Mínimos
-            </h3>
-            <ul class="req-list">
-                <li><strong>Procesador (CPU):</strong> Intel Core i3 (8va Gen) o AMD Ryzen 3</li>
-                <li><strong>RAM Asignada:</strong> 4 GB o 5 GB</li>
+        <div class="card">
+            <h3>Mínimo</h3>
+            <ul>
+                <li><strong>CPU:</strong> i3 8va / Ryzen 3</li>
+                <li><strong>RAM Asignada:</strong> 4GB</li>
             </ul>
         </div>
-    </section>
+    </div>
 
     <footer>
-        &copy; 2026 Credipt Community | Desarrollado por @sanjti9123981
+        &copy; 2026 Credipt Launcher | Creado por Santiago
     </footer>
 
     <script>
-        // Generador de Estrellas de Fondo (Más variable)
-        function initStars() {
+        // Estrellas optimizadas (Menos cantidad, más impacto)
+        function createStars() {
             const container = document.getElementById('stars-container');
-            for(let i=0; i<150; i++) {
-                let star = document.createElement('div');
+            const fragment = document.createDocumentFragment();
+            for(let i=0; i<60; i++) {
+                const star = document.createElement('div');
                 star.className = 'star';
-                let size = Math.random() * 4 + 1;
+                const size = Math.random() * 3 + 1;
                 star.style.width = size + 'px';
                 star.style.height = size + 'px';
                 star.style.left = Math.random() * 100 + 'vw';
-                star.style.animationDuration = (Math.random() * 6 + 3) + 's';
-                star.style.animationDelay = (Math.random() * 7) + 's';
-                container.appendChild(star);
+                star.style.top = Math.random() * 100 + 'vh';
+                star.style.animation = `fall ${Math.random() * 10 + 5}s linear infinite`;
+                star.style.animationDelay = `${Math.random() * 5}s`;
+                fragment.appendChild(star);
             }
+            container.appendChild(fragment);
         }
-        initStars();
+        createStars();
 
-        // Subutil Parallax Efecto en el Showcase con el mouse (Súper suave)
-        const showcase = document.getElementById('hero-showcase');
+        // Efecto de inclinación suave y optimizado
+        const box = document.getElementById('tilt-box');
+        let request = null;
+
         document.addEventListener('mousemove', (e) => {
-            let xAxis = (window.innerWidth / 2 - e.pageX) / 60;
-            let yAxis = (window.innerHeight / 2 - e.pageY) / 60;
-            showcase.style.transform = `rotateY(${12 + xAxis}deg) rotateX(${5 + yAxis}deg)`;
-        });
-
-        // Vuelve a la posición inicial al quitar el mouse
-        showcase.addEventListener('mouseleave', () => {
-            showcase.style.transform = `rotateY(12deg) rotateX(5deg)`;
+            if (request) cancelAnimationFrame(request);
+            request = requestAnimationFrame(() => {
+                const x = (window.innerWidth / 2 - e.pageX) / 50;
+                const y = (window.innerHeight / 2 - e.pageY) / 50;
+                box.style.transform = `rotateY(${-x}deg) rotateX(${y}deg)`;
+            });
         });
     </script>
 </body>
