@@ -3,28 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Credipt Launcher | PRIMSZONE</title>
+    <title>Credipt Launcher | Oficial</title>
     <link rel="icon" type="image/png" href="electron-logo.png">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
         :root {
             --primary: #0078d7;
             --accent: #a855f7;
-            --bg-dark: #020617;
-            --text-light: #f8fafc;
+            --bg: #020617;
+            --text: #f8fafc;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
 
         body {
-            background: #020617; /* Color sólido primero para velocidad */
-            background: radial-gradient(ellipse at bottom, #1b2735 0%, #020617 100%);
-            color: var(--text-light);
+            background-color: var(--bg);
+            background-image: radial-gradient(ellipse at bottom, #1b2735 0%, #020617 100%);
+            color: var(--text);
             overflow-x: hidden;
             min-height: 100vh;
         }
 
-        /* --- Fondo Optimizado --- */
+        /* --- Estrellas Optimizadas (Hardware Accelerated) --- */
         #stars-container { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1; pointer-events: none; }
         .star { position: absolute; background: white; border-radius: 50%; opacity: 0; will-change: transform; }
 
@@ -33,110 +33,114 @@
             100% { transform: translateY(110vh); opacity: 0; }
         }
 
-        /* --- Navbar --- */
+        /* --- Navegación --- */
         nav {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 15px 5%;
-            background: rgba(2, 6, 23, 0.8);
-            backdrop-filter: blur(10px);
+            padding: 1rem 5%;
+            background: rgba(2, 6, 23, 0.85);
+            backdrop-filter: blur(12px);
             position: fixed;
             width: 100%;
             top: 0;
             z-index: 100;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
 
-        .logo-container { display: flex; align-items: center; gap: 12px; font-weight: 900; font-size: 22px; text-transform: uppercase; }
-        .logo-container img { width: 35px; height: 35px; }
+        .logo { display: flex; align-items: center; gap: 12px; font-weight: 900; font-size: 1.4rem; letter-spacing: 1px; }
+        .logo img { width: 38px; height: 38px; }
 
         /* --- Hero Section --- */
         .hero {
-            padding: 160px 20px 60px;
+            padding: 160px 1.5rem 60px;
             text-align: center;
             max-width: 1200px;
             margin: 0 auto;
         }
 
         .hero h1 {
-            font-size: clamp(40px, 8vw, 70px);
+            font-size: clamp(2.5rem, 8vw, 4.5rem);
             font-weight: 900;
+            line-height: 1.1;
             background: linear-gradient(45deg, #4facfe, #00f2fe);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            margin-bottom: 20px;
+            margin-bottom: 1.5rem;
+            text-transform: uppercase;
         }
 
-        .hero p { font-size: 18px; color: #94a3b8; max-width: 700px; margin: 0 auto 40px; }
+        .hero p { font-size: 1.2rem; color: #94a3b8; max-width: 750px; margin: 0 auto 3rem; font-weight: 300; }
 
-        /* --- Botón --- */
-        .btn-download {
+        .btn {
             background: linear-gradient(45deg, var(--primary), var(--accent));
             color: white;
             text-decoration: none;
-            padding: 18px 45px;
-            font-size: 20px;
-            font-weight: bold;
+            padding: 1.2rem 3rem;
+            font-size: 1.3rem;
+            font-weight: 700;
             border-radius: 50px;
             display: inline-flex;
             align-items: center;
-            gap: 10px;
-            transition: transform 0.2s;
-            box-shadow: 0 10px 30px rgba(0, 120, 215, 0.3);
+            gap: 12px;
+            transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 10px 30px rgba(0, 120, 215, 0.4);
         }
-        .btn-download:hover { transform: translateY(-3px) scale(1.02); }
+        .btn:hover { transform: translateY(-5px) scale(1.03); box-shadow: 0 15px 40px rgba(0, 120, 215, 0.6); }
 
-        /* --- Showcase Optimizado --- */
-        #showcase-section {
-            padding: 40px 20px;
+        /* --- Showcase Section --- */
+        .showcase {
+            padding: 40px 1.5rem;
             display: flex;
             justify-content: center;
-            perspective: 1000px;
+            perspective: 1200px;
         }
 
-        .showcase-box {
+        .showcase-inner {
             width: 100%;
             max-width: 1000px;
             will-change: transform;
-            transition: transform 0.4s cubic-bezier(0.2, 0, 0.2, 1);
-            transform: rotateX(5deg);
+            transition: transform 0.5s ease-out;
+            transform: rotateX(8deg);
         }
 
-        .showcase-box img {
+        .showcase-inner img {
             width: 100%;
-            border-radius: 15px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
-            border: 1px solid rgba(255,255,255,0.1);
-            display: block;
+            height: auto;
+            border-radius: 18px;
+            box-shadow: 0 30px 70px rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        /* --- Requisitos --- */
+        /* --- Info Grid --- */
         .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 25px;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
             max-width: 1200px;
-            margin: 60px auto;
-            padding: 0 20px;
+            margin: 80px auto;
+            padding: 0 1.5rem;
         }
 
         .card {
             background: rgba(255, 255, 255, 0.03);
-            padding: 30px;
-            border-radius: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 2.5rem;
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            backdrop-filter: blur(10px);
+            transition: 0.3s;
         }
+        .card:hover { border-color: var(--primary); background: rgba(255, 255, 255, 0.05); transform: translateY(-5px); }
+        .card h3 { color: #38bdf8; margin-bottom: 1.5rem; font-size: 1.5rem; text-transform: uppercase; }
+        .card ul { list-style: none; color: #94a3b8; font-size: 1.05rem; line-height: 2; }
+        .card ul li strong { color: white; margin-right: 5px; }
 
-        .card h3 { color: #38bdf8; margin-bottom: 15px; font-size: 20px; }
-        .card ul { list-style: none; color: #94a3b8; line-height: 1.8; }
-        .card ul li strong { color: white; }
-
-        footer { padding: 40px; text-align: center; color: #475569; font-size: 14px; }
+        footer { padding: 50px 20px; text-align: center; color: #475569; font-size: 0.9rem; border-top: 1px solid rgba(255, 255, 255, 0.05); }
 
         @media (max-width: 768px) {
-            .hero h1 { font-size: 35px; }
-            nav { padding: 15px 20px; }
+            .hero { padding-top: 130px; }
+            .hero h1 { font-size: 2.8rem; }
+            .grid { margin: 40px auto; }
         }
     </style>
 </head>
@@ -145,63 +149,69 @@
     <div id="stars-container"></div>
 
     <nav>
-        <div class="logo-container">
-            <img src="electron-logo.png" alt="Logo">
+        <div class="logo">
+            <img src="electron-logo.png" alt="Credipt Logo">
             <span>CREDIPT</span>
         </div>
     </nav>
 
-    <section class="hero">
-        <h1>PRIMSZONE Launcher</h1>
-        <p>El acceso más rápido y seguro a tu servidor de Minecraft. Optimización nativa y diseño moderno en una sola aplicación.</p>
-        
-        <a href="https://github.com/sanjti9123981/mc-launcher-versiones2/releases/download/1.3.0/Instalador_Credipt_Launcher.exe" class="btn-download">
-            Descargar V1.3.0
-        </a>
-    </section>
+    <main>
+        <section class="hero">
+            <h1>Credipt Launcher</h1>
+            <p>El portal definitivo a PRIMSZONE. Rendimiento superior, instalación automatizada de mods y una interfaz diseñada para el futuro.</p>
+            
+            <a href="https://github.com/sanjti9123981/mc-launcher-versiones2/releases/download/1.3.0/Instalador_Credipt_Launcher.exe" class="btn">
+                Descargar ahora
+            </a>
+        </section>
 
-    <section id="showcase-section">
-        <div class="showcase-box" id="tilt-box">
-            <img src="launcher-main.png" alt="Preview" loading="eager">
-        </div>
-    </section>
+        <section class="showcase">
+            <div class="showcase-inner" id="tilt-box">
+                <img src="launcher-main.png" alt="Launcher Preview" loading="eager">
+            </div>
+        </section>
 
-    <div class="grid">
-        <div class="card">
-            <h3>Recomendado</h3>
-            <ul>
-                <li><strong>CPU:</strong> i5 10ma / Ryzen 5</li>
-                <li><strong>RAM:</strong> 8GB - 12GB</li>
-                <li><strong>GPU:</strong> Radeon Vega / GTX</li>
-            </ul>
-        </div>
-        <div class="card">
-            <h3>Mínimo</h3>
-            <ul>
-                <li><strong>CPU:</strong> i3 8va / Ryzen 3</li>
-                <li><strong>RAM Asignada:</strong> 4GB</li>
-            </ul>
-        </div>
-    </div>
+        <section class="grid">
+            <div class="card">
+                <h3>Requisitos Recomendados</h3>
+                <ul>
+                    <li><strong>CPU:</strong> i5 10ma Gen / Ryzen 5</li>
+                    <li><strong>RAM Total:</strong> 8 GB - 12 GB</li>
+                    <li><strong>RAM Juego:</strong> 6 GB - 8 GB</li>
+                    <li><strong>GPU:</strong> Dedicada o Vega 10</li>
+                </ul>
+            </div>
+            <div class="card">
+                <h3>Requisitos Mínimos</h3>
+                <ul>
+                    <li><strong>CPU:</strong> i3 8va Gen / Ryzen 3</li>
+                    <li><strong>RAM Juego:</strong> 4 GB - 5 GB</li>
+                    <li><strong>Internet:</strong> Conexión estable</li>
+                </ul>
+            </div>
+        </section>
+    </main>
 
     <footer>
         &copy; 2026 Credipt Launcher | Creado por Santiago
     </footer>
 
     <script>
-        // Estrellas optimizadas (Menos cantidad, más impacto)
+        // Estrellas optimizadas (Uso de DocumentFragment para evitar Reflow)
         function createStars() {
             const container = document.getElementById('stars-container');
             const fragment = document.createDocumentFragment();
-            for(let i=0; i<60; i++) {
+            const count = window.innerWidth < 768 ? 40 : 75; // Menos estrellas en móvil
+
+            for(let i=0; i < count; i++) {
                 const star = document.createElement('div');
                 star.className = 'star';
                 const size = Math.random() * 3 + 1;
-                star.style.width = size + 'px';
-                star.style.height = size + 'px';
-                star.style.left = Math.random() * 100 + 'vw';
-                star.style.top = Math.random() * 100 + 'vh';
-                star.style.animation = `fall ${Math.random() * 10 + 5}s linear infinite`;
+                star.style.width = `${size}px`;
+                star.style.height = `${size}px`;
+                star.style.left = `${Math.random() * 100}vw`;
+                star.style.top = `${Math.random() * 100}vh`;
+                star.style.animation = `fall ${Math.random() * 12 + 6}s linear infinite`;
                 star.style.animationDelay = `${Math.random() * 5}s`;
                 fragment.appendChild(star);
             }
@@ -209,17 +219,20 @@
         }
         createStars();
 
-        // Efecto de inclinación suave y optimizado
+        // Efecto de inclinación (Tilt) ultra fluido
         const box = document.getElementById('tilt-box');
-        let request = null;
+        let ticker = false;
 
         document.addEventListener('mousemove', (e) => {
-            if (request) cancelAnimationFrame(request);
-            request = requestAnimationFrame(() => {
-                const x = (window.innerWidth / 2 - e.pageX) / 50;
-                const y = (window.innerHeight / 2 - e.pageY) / 50;
-                box.style.transform = `rotateY(${-x}deg) rotateX(${y}deg)`;
-            });
+            if (!ticker) {
+                requestAnimationFrame(() => {
+                    const x = (window.innerWidth / 2 - e.pageX) / 45;
+                    const y = (window.innerHeight / 2 - e.pageY) / 45;
+                    box.style.transform = `rotateY(${-x}deg) rotateX(${y}deg)`;
+                    ticker = false;
+                });
+                ticker = true;
+            }
         });
     </script>
 </body>
