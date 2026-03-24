@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Credipt | El Servidor Definitivo</title>
+    <link rel="icon" type="image/png" href="electron-logo.png">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0078d7;
+            --primary-glow: rgba(0, 120, 215, 0.6);
+            --accent: #a855f7;
+            --accent-glow: rgba(168, 85, 247, 0.6);
+            --bg: #020617;
+            --text: #f8fafc;
+            --glass: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+
+        body {
+            background-color: var(--bg);
+            background-image: radial-gradient(circle at 50% 100%, #1b2735 0%, #020617 100%);
+            color: var(--text);
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* --- Fondo Animado --- */
+        #stars-container { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1; pointer-events: none; }
+        .star { position: absolute; background: white; border-radius: 50%; opacity: 0; will-change: transform; }
+
+        @keyframes fall {
+            0% { transform: translateY(-10vh) scale(0.5); opacity: 0; }
+            20% { opacity: 1; scale: 1; }
+            80% { opacity: 1; }
+            100% { transform: translateY(110vh) scale(0.5); opacity: 0; }
+        }
+
+        /* --- Animaciones de Aparición (Scroll) --- */
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 0.8s cubic-bezier(0.5, 0, 0, 1);
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* --- Navegación --- */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.2rem 5%;
+            background: rgba(2, 6, 23, 0.7);
+            backdrop-filter: blur(15px);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid var(--glass-border);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .logo { display: flex; align-items: center; gap: 12px; font-weight: 900; font-size: 1.5rem; letter-spacing: 2px; }
+        .logo img { width: 40px; height: 40px; filter: drop-shadow(0 0 8px var(--primary-glow)); }
+
+        /* --- Hero Section --- */
+        .hero {
+            padding: 180px 1.5rem 80px;
+            text-align: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .hero h1 {
+            font-size: clamp(3rem, 8vw, 5.5rem);
+            font-weight: 900;
+            line-height: 1.1;
+            background: linear-gradient(135deg, #4facfe, #00f2fe, #a855f7);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1.5rem;
+            text-transform: uppercase;
+            animation: shine 5s linear infinite;
+        }
+
+        @keyframes shine { to { background-position: 200% center; } }
+
+        .hero p { font-size: 1.3rem; color: #94a3b8; max-width: 800px; margin: 0 auto 2.5rem; font-weight: 300; line-height: 1.6; }
+
+        /* --- Botones --- */
+        .hero-buttons {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 3rem;
+        }
+
+        .btn {
+            background: linear-gradient(45deg, var(--primary), var(--accent));
+            color: white;
+            text-decoration: none;
+            padding: 1.2rem 3.5rem;
+            font-size: 1.2rem;
+            font-weight: 700;
+            border-radius: 50px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            transition: all 0.4s ease;
+            box-shadow: 0 10px 30px var(--primary-glow);
+            border: 2px solid transparent;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .btn:hover { 
+            transform: translateY(-5px) scale(1.05); 
+            box-shadow: 0 15px 40px var(--accent-glow); 
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            box-shadow: none;
+        }
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--accent);
+            box-shadow: 0 10px 30px rgba(168, 85, 247, 0.3);
+        }
+
+        /* --- Estado del Servidor --- */
+        .server-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(0, 0, 0, 0.4);
+            padding: 12px 25px;
+            border-radius: 30px;
+            border: 1px solid var(--glass-border);
+            font-size: 1.1rem;
+            color: #e2e8f0;
+            backdrop-filter: blur(10px);
+            box-shadow: inset 0 0 20px rgba(255,255,255,0.02);
+        }
+
+        .status-dot {
+            width: 12px;
+            height: 12px;
+            background-color: #22c55e;
+            border-radius: 50%;
+            box-shadow: 0 0 15px #22c55e;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 8px rgba(34, 197, 94, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
+        }
+
+        /* --- Showcase Section --- */
+        .showcase {
+            padding: 20px 1.5rem 80px;
+            display: flex;
+            justify-content: center;
+            perspective: 1200px;
+        }
+
+        .showcase-inner {
+            width: 100%;
+            max-width: 1050px;
+            will-change: transform;
+            transition: transform 0.5s ease-out;
+            transform: rotateX(8deg);
+            position: relative;
+        }
+        
+        /* Brillo detrás de la imagen */
+        .showcase-inner::before {
+            content: '';
+            position: absolute;
+            top: 5%; left: 5%; right: 5%; bottom: 5%;
+            background: linear-gradient(45deg, var(--primary), var(--accent));
+            filter: blur(80px);
+            opacity: 0.3;
+            z-index: -1;
+        }
+
+        .showcase-inner img {
+            width: 100%;
+            height: auto;
+            border-radius: 20px;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.8);
+            border: 1px solid var(--glass-border);
+        }
+
+        /* --- Text & Lore Section --- */
+        .info-section {
+            max-width: 1000px;
+            margin: 0 auto 80px;
+            padding: 40px 2rem;
+            text-align: center;
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 30px;
+            backdrop-filter: blur(10px);
+        }
+
+        .info-section h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            color: #fff;
+        }
+
+        .info-section p {
+            font-size: 1.15rem;
+            color: #cbd5e1;
+            line-height: 1.8;
+            margin-bottom: 1.5rem;
+        }
+
+        /* --- Características Grid --- */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto 80px;
+            padding: 0 1.5rem;
+        }
+
+        .feature-card {
+            background: rgba(15, 23, 42, 0.6);
+            padding: 2.5rem;
+            border-radius: 24px;
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(10px);
+            transition: 0.4s;
+            text-align: left;
+        }
+        .feature-card:hover { 
+            border-color: var(--primary); 
+            background: rgba(30, 41, 59, 0.8); 
+            transform: translateY(-10px); 
+            box-shadow: 0 15px 30px rgba(0, 120, 215, 0.15);
+        }
+        .feature-icon { font-size: 2.5rem; margin-bottom: 1rem; }
+        .feature-card h3 { color: #38bdf8; margin-bottom: 1rem; font-size: 1.4rem; }
+        .feature-card p { color: #94a3b8; line-height: 1.6; }
+
+        /* --- Info Grid (Requisitos) --- */
+        .req-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+            max-width: 1000px;
+            margin: 0 auto 80px;
+            padding: 0 1.5rem;
+        }
+
+        .req-card {
+            background: var(--glass);
+            padding: 2.5rem;
+            border-radius: 24px;
+            border: 1px solid var(--glass-border);
+            transition: 0.3s;
+        }
+        .req-card h3 { color: #a855f7; margin-bottom: 1.5rem; font-size: 1.5rem; text-transform: uppercase; text-align: center;}
+        .req-card ul { list-style: none; color: #cbd5e1; font-size: 1.05rem; line-height: 2.2; }
+        .req-card ul li { display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .req-card ul li strong { color: white; }
+
+        footer { padding: 50px 20px; text-align: center; color: #475569; font-size: 0.9rem; border-top: 1px solid var(--glass-border); margin-top: 50px;}
+
+        @media (max-width: 768px) {
+            .hero { padding-top: 130px; }
+            .hero h1 { font-size: 2.8rem; }
+            .hero-buttons { flex-direction: column; }
+            .info-section h2 { font-size: 2rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="stars-container"></div>
+
+    <nav>
+        <div class="logo">
+            <img src="electron-logo.png" alt="Credipt Logo">
+            <span>CREDIPT</span>
+        </div>
+    </nav>
+
+    <main>
+        <section class="hero reveal active">
+            <h1>Bienvenido a Credipt</h1>
+            <p>El launcher y servidor definitivo. Hemos reescrito las reglas de la optimización para ofrecerte la experiencia multijugador más fluida, estable y avanzada que jamás hayas probado.</p>
+            
+            <div class="hero-buttons">
+                <a href="https://github.com/sanjti9123981/mc-launcher-versiones2/releases/download/1.3.0/Instalador_Credipt_Launcher.exe" class="btn">
+                    🚀 Descargar Launcher
+                </a>
+                <a href="#about" class="btn btn-secondary">
+                    Descubrir Más
+                </a>
+            </div>
+
+            <div class="server-status">
+                <span class="status-dot"></span>
+                <span id="player-count">Conectando con Credipt Network...</span>
+            </div>
+        </section>
+
+        <section class="showcase reveal">
+            <div class="showcase-inner" id="tilt-box">
+                <img src="launcher-main.png" alt="Credipt Launcher Preview" loading="eager">
+            </div>
+        </section>
+
+        <section id="about" class="info-section reveal">
+            <h2>¿Qué hace único a Credipt?</h2>
+            <p>No somos solo un modpack. <strong>Credipt</strong> es un ecosistema completo diseñado desde cero para jugadores exigentes. Nuestro launcher personalizado se comunica directamente con nuestros servidores de alto rendimiento, eliminando intermediarios.</p>
+            <p>Olvídate de buscar versiones de Forge, instalar Java o configurar memoria RAM. Nuestro software analiza tu PC y aplica la mejor configuración automáticamente. Solo dale a "Jugar" y nosotros hacemos el resto.</p>
+        </section>
+
+        <section class="features-grid">
+            <div class="feature-card reveal">
+                <div class="feature-icon">⚡</div>
+                <h3>Máximos FPS</h3>
+                <p>Nuestra pre-configuración incluye los mejores mods de rendimiento actuales. Menos consumo de RAM, cero tirones de carga y chunks que aparecen al instante.</p>
+            </div>
+            <div class="feature-card reveal">
+                <div class="feature-icon">🛠️</div>
+                <h3>Cero Complicaciones</h3>
+                <p>El launcher descarga y sincroniza los mods del servidor de forma automática. Si actualizamos el servidor, tu cliente se actualiza en segundos.</p>
+            </div>
+            <div class="feature-card reveal">
+                <div class="feature-icon">🛡️</div>
+                <h3>Conexión Premium</h3>
+                <p>Alojados en infraestructura de grado empresarial con protección DDoS activa. Ping estable y TPS perfectos para que tu supervivencia nunca se interrumpa.</p>
+            </div>
+        </section>
+
+        <section class="req-grid">
+            <div class="req-card reveal">
+                <h3>Requisitos Mínimos</h3>
+                <ul>
+                    <li><strong>Procesador</strong> <span>i3 8va Gen / Ryzen 3</span></li>
+                    <li><strong>Memoria RAM</strong> <span>4 GB - 5 GB</span></li>
+                    <li><strong>Gráficos</strong> <span>Integrados modernos</span></li>
+                    <li><strong>Internet</strong> <span>Conexión estable</span></li>
+                </ul>
+            </div>
+            <div class="req-card reveal">
+                <h3>Requisitos Recomendados</h3>
+                <ul>
+                    <li><strong>Procesador</strong> <span>i5 10ma Gen / Ryzen 5+</span></li>
+                    <li><strong>Memoria RAM</strong> <span>8 GB - 12 GB</span></li>
+                    <li><strong>Gráficos</strong> <span>GTX 1650 / RX 570+</span></li>
+                    <li><strong>Internet</strong> <span>Banda Ancha</span></li>
+                </ul>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        &copy; 2026 Credipt Network | Desarrollado por Santiago
+    </footer>
+
+    <script>
+        // --- API de Minecraft (Jugadores Conectados a Credipt) ---
+        function updateServerStatus() {
+            const serverIP = '104.224.55.73:25565';
+            const countText = document.getElementById('player-count');
+            const dot = document.querySelector('.status-dot');
+
+            fetch(`https://api.mcsrvstat.us/2/${serverIP}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.online) {
+                        countText.innerHTML = `<strong>${data.players.online}</strong> jugadores en línea en Credipt`;
+                        dot.style.backgroundColor = "#22c55e"; 
+                        dot.style.boxShadow = "0 0 15px #22c55e";
+                    } else {
+                        countText.innerText = "Servidor en mantenimiento / Reiniciando";
+                        dot.style.backgroundColor = "#ef4444"; 
+                        dot.style.boxShadow = "0 0 15px #ef4444";
+                    }
+                })
+                .catch(error => {
+                    countText.innerText = "Analizando estado del servidor...";
+                    dot.style.backgroundColor = "#f59e0b"; 
+                    dot.style.boxShadow = "0 0 15px #f59e0b";
+                });
+        }
+        
+        updateServerStatus();
+        setInterval(updateServerStatus, 60000);
+
+        // --- Sistema de Animación al hacer Scroll (Reveal) ---
+        function revealOnScroll() {
+            const reveals = document.querySelectorAll('.reveal');
+            const windowHeight = window.innerHeight;
+            const elementVisible = 100;
+
+            reveals.forEach((reveal) => {
+                const elementTop = reveal.getBoundingClientRect().top;
+                if (elementTop < windowHeight - elementVisible) {
+                    reveal.classList.add('active');
+                }
+            });
+        }
+        window.addEventListener('scroll', revealOnScroll);
+        revealOnScroll(); // Trigger inicial
+
+        // --- Estrellas Optimizadas ---
+        function createStars() {
+            const container = document.getElementById('stars-container');
+            const fragment = document.createDocumentFragment();
+            const count = window.innerWidth < 768 ? 35 : 60; 
+
+            for(let i=0; i < count; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                const size = Math.random() * 3 + 1;
+                star.style.width = `${size}px`;
+                star.style.height = `${size}px`;
+                star.style.left = `${Math.random() * 100}vw`;
+                star.style.top = `${Math.random() * 100}vh`;
+                star.style.animation = `fall ${Math.random() * 15 + 8}s linear infinite`;
+                star.style.animationDelay = `${Math.random() * 5}s`;
+                fragment.appendChild(star);
+            }
+            container.appendChild(fragment);
+        }
+        createStars();
+
+        // --- Efecto de Inclinación (Tilt) ---
+        const box = document.getElementById('tilt-box');
+        let ticker = false;
+
+        document.addEventListener('mousemove', (e) => {
+            if (!ticker) {
+                requestAnimationFrame(() => {
+                    const x = (window.innerWidth / 2 - e.pageX) / 50;
+                    const y = (window.innerHeight / 2 - e.pageY) / 50;
+                    box.style.transform = `rotateY(${-x}deg) rotateX(${y}deg)`;
+                    ticker = false;
+                });
+                ticker = true;
+            }
+        });
+    </script>
+</body>
+</html>
