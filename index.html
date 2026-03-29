@@ -3,465 +3,391 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Credipt | El Servidor Definitivo</title>
+    <title>Credipt — Servidor Modded NeoForge 1.21.1</title>
+    <meta name="description" content="Credipt SMP — Servidor modded de Minecraft con Create, armas, dimensiones y launcher propio. Descarga y juega en segundos.">
     <link rel="icon" type="image/png" href="electron-logo.png">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #0078d7;
-            --primary-glow: rgba(0, 120, 215, 0.6);
-            --accent: #a855f7;
-            --accent-glow: rgba(168, 85, 247, 0.6);
-            --bg: #020617;
-            --text: #f8fafc;
-            --glass: rgba(255, 255, 255, 0.03);
-            --glass-border: rgba(255, 255, 255, 0.08);
+            --c1: #c4b5fd;
+            --c2: #7c3aed;
+            --c3: #4c1d95;
+            --bg: #09080f;
+            --card: rgba(255,255,255,0.025);
+            --border: rgba(255,255,255,0.06);
+            --dim: #64748b;
+            --text: #e2e8f0;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        * { margin:0; padding:0; box-sizing:border-box; }
 
         body {
-            background-color: var(--bg);
-            background-image: radial-gradient(circle at 50% 100%, #1b2735 0%, #020617 100%);
+            font-family: 'Outfit', system-ui, sans-serif;
+            background: var(--bg);
             color: var(--text);
             overflow-x: hidden;
-            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
         }
 
-        /* --- Fondo Animado --- */
-        #stars-container { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1; pointer-events: none; }
-        .star { position: absolute; background: white; border-radius: 50%; opacity: 0; will-change: transform; }
-
-        @keyframes fall {
-            0% { transform: translateY(-10vh) scale(0.5); opacity: 0; }
-            20% { opacity: 1; scale: 1; }
-            80% { opacity: 1; }
-            100% { transform: translateY(110vh) scale(0.5); opacity: 0; }
+        /* ── GRAIN OVERLAY ── */
+        body::after {
+            content:''; position:fixed; inset:0; z-index:9999;
+            pointer-events:none; opacity:0.03;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
         }
 
-        /* --- Animaciones de Aparición (Scroll) --- */
-        .reveal {
-            opacity: 0;
-            transform: translateY(40px);
-            transition: all 0.8s cubic-bezier(0.5, 0, 0, 1);
-        }
-        .reveal.active {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        /* --- Navegación --- */
+        /* ── NAV ── */
         nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1.2rem 5%;
-            background: rgba(2, 6, 23, 0.7);
-            backdrop-filter: blur(15px);
-            position: fixed;
-            width: 100%;
-            top: 0;
-            z-index: 100;
-            border-bottom: 1px solid var(--glass-border);
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+            position:fixed; top:0; width:100%; z-index:100;
+            padding: 1rem 4%;
+            display:flex; justify-content:space-between; align-items:center;
+            background: rgba(9,8,15,0.85);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+        }
+        .nav-brand {
+            font-weight:800; font-size:1.15rem; letter-spacing:3px;
+            text-transform:uppercase; color:#fff;
+        }
+        .nav-brand span { color: var(--c1); }
+        .nav-status {
+            display:flex; align-items:center; gap:8px;
+            font-family:'JetBrains Mono',monospace; font-size:0.8rem;
+            color: var(--dim); letter-spacing:0.5px;
+        }
+        .dot {
+            width:7px; height:7px; border-radius:50%;
+            background:#22c55e; box-shadow:0 0 8px #22c55e;
+            animation: blink 2s infinite;
+        }
+        .dot.off { background:#ef4444; box-shadow:0 0 8px #ef4444; }
+        .dot.loading { background:#f59e0b; box-shadow:0 0 8px #f59e0b; }
+        @keyframes blink {
+            0%,100%{opacity:1} 50%{opacity:0.4}
         }
 
-        .logo { display: flex; align-items: center; gap: 12px; font-weight: 900; font-size: 1.5rem; letter-spacing: 2px; }
-        .logo img { width: 40px; height: 40px; filter: drop-shadow(0 0 8px var(--primary-glow)); }
-
-        /* --- Hero Section --- */
+        /* ── HERO ── */
         .hero {
-            padding: 180px 1.5rem 80px;
-            text-align: center;
-            max-width: 1200px;
-            margin: 0 auto;
-            position: relative;
+            min-height:100vh; display:flex; flex-direction:column;
+            align-items:center; justify-content:center;
+            padding: 120px 1.5rem 60px; text-align:center;
+            position:relative;
+        }
+
+        /* Ambient glow */
+        .hero::before {
+            content:''; position:absolute;
+            width:600px; height:600px; top:10%; left:50%;
+            transform:translateX(-50%);
+            background: radial-gradient(circle, rgba(124,58,237,0.12) 0%, transparent 70%);
+            pointer-events:none;
+        }
+
+        .tag {
+            font-family:'JetBrains Mono',monospace;
+            font-size:0.75rem; letter-spacing:2px; text-transform:uppercase;
+            color: var(--c1); margin-bottom:1.5rem;
+            padding:6px 16px; border:1px solid rgba(196,181,253,0.2);
+            border-radius:4px; display:inline-block;
         }
 
         .hero h1 {
-            font-size: clamp(3rem, 8vw, 5.5rem);
-            font-weight: 900;
-            line-height: 1.1;
-            background: linear-gradient(135deg, #4facfe, #00f2fe, #a855f7);
-            background-size: 200% auto;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 1.5rem;
-            text-transform: uppercase;
-            animation: shine 5s linear infinite;
+            font-size: clamp(2.8rem, 7vw, 5rem);
+            font-weight:900; line-height:1.05;
+            color:#fff; margin-bottom:1.2rem;
+            letter-spacing:-1px;
+        }
+        .hero h1 em {
+            font-style:normal;
+            background: linear-gradient(135deg, var(--c1), var(--c2));
+            -webkit-background-clip:text; -webkit-text-fill-color:transparent;
         }
 
-        @keyframes shine { to { background-position: 200% center; } }
-
-        .hero p { font-size: 1.3rem; color: #94a3b8; max-width: 800px; margin: 0 auto 2.5rem; font-weight: 300; line-height: 1.6; }
-
-        /* --- Botones --- */
-        .hero-buttons {
-            display: flex;
-            gap: 1.5rem;
-            justify-content: center;
-            flex-wrap: wrap;
-            margin-bottom: 3rem;
+        .hero-sub {
+            font-size:1.1rem; color:var(--dim); max-width:560px;
+            line-height:1.7; margin-bottom:2.5rem; font-weight:300;
         }
 
-        .btn {
-            background: linear-gradient(45deg, var(--primary), var(--accent));
-            color: white;
-            text-decoration: none;
-            padding: 1.2rem 3.5rem;
-            font-size: 1.2rem;
-            font-weight: 700;
-            border-radius: 50px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-            transition: all 0.4s ease;
-            box-shadow: 0 10px 30px var(--primary-glow);
-            border: 2px solid transparent;
-            cursor: pointer;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+        .hero-actions { display:flex; gap:1rem; flex-wrap:wrap; justify-content:center; }
+
+        .btn-main {
+            display:inline-flex; align-items:center; gap:10px;
+            padding: 14px 36px; border-radius:8px;
+            font-family:'Outfit',sans-serif; font-weight:700; font-size:1rem;
+            text-decoration:none; color:#fff;
+            background: var(--c2);
+            border: 1px solid rgba(124,58,237,0.5);
+            transition: all 0.3s;
+            letter-spacing:0.5px;
         }
-        
-        .btn:hover { 
-            transform: translateY(-5px) scale(1.05); 
-            box-shadow: 0 15px 40px var(--accent-glow); 
+        .btn-main:hover {
+            background: #6d28d9;
+            box-shadow: 0 8px 32px rgba(124,58,237,0.35);
+            transform:translateY(-2px);
+        }
+        .btn-ghost {
+            display:inline-flex; align-items:center; gap:10px;
+            padding:14px 36px; border-radius:8px;
+            font-family:'Outfit',sans-serif; font-weight:600; font-size:1rem;
+            text-decoration:none; color:var(--dim);
+            background:transparent;
+            border:1px solid var(--border);
+            transition:all 0.3s;
+        }
+        .btn-ghost:hover {
+            color:#fff; border-color:rgba(255,255,255,0.15);
+            background:rgba(255,255,255,0.03);
         }
 
-        .btn-secondary {
-            background: rgba(255, 255, 255, 0.05);
-            border: 2px solid rgba(255, 255, 255, 0.2);
-            box-shadow: none;
-        }
-        .btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.1);
-            border-color: var(--accent);
-            box-shadow: 0 10px 30px rgba(168, 85, 247, 0.3);
-        }
-
-        /* --- Estado del Servidor --- */
-        .server-status {
-            display: inline-flex;
-            align-items: center;
-            gap: 12px;
-            background: rgba(0, 0, 0, 0.4);
-            padding: 12px 25px;
-            border-radius: 30px;
-            border: 1px solid var(--glass-border);
-            font-size: 1.1rem;
-            color: #e2e8f0;
-            backdrop-filter: blur(10px);
-            box-shadow: inset 0 0 20px rgba(255,255,255,0.02);
-        }
-
-        .status-dot {
-            width: 12px;
-            height: 12px;
-            background-color: #22c55e;
-            border-radius: 50%;
-            box-shadow: 0 0 15px #22c55e;
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); }
-            70% { transform: scale(1); box-shadow: 0 0 0 8px rgba(34, 197, 94, 0); }
-            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
-        }
-
-        /* --- Showcase Section --- */
+        /* ── SHOWCASE ── */
         .showcase {
-            padding: 20px 1.5rem 80px;
-            display: flex;
-            justify-content: center;
-            perspective: 1200px;
+            padding: 0 1.5rem 100px;
+            display:flex; justify-content:center;
+        }
+        .showcase-frame {
+            width:100%; max-width:960px; position:relative;
+        }
+        .showcase-frame::before {
+            content:''; position:absolute;
+            inset:-2%; border-radius:24px;
+            background: linear-gradient(135deg, rgba(124,58,237,0.15), transparent 60%);
+            filter:blur(60px); z-index:-1;
+        }
+        .showcase-frame img {
+            width:100%; border-radius:16px;
+            border:1px solid var(--border);
+            box-shadow: 0 40px 80px rgba(0,0,0,0.6);
+        }
+        .showcase-label {
+            position:absolute; bottom:-14px; left:50%; transform:translateX(-50%);
+            font-family:'JetBrains Mono',monospace; font-size:0.7rem;
+            color:var(--dim); letter-spacing:1px;
+            background:var(--bg); padding:4px 14px;
+            border:1px solid var(--border); border-radius:4px;
         }
 
-        .showcase-inner {
-            width: 100%;
-            max-width: 1050px;
-            will-change: transform;
-            transition: transform 0.5s ease-out;
-            transform: rotateX(8deg);
-            position: relative;
-        }
-        
-        /* Brillo detrás de la imagen */
-        .showcase-inner::before {
-            content: '';
-            position: absolute;
-            top: 5%; left: 5%; right: 5%; bottom: 5%;
-            background: linear-gradient(45deg, var(--primary), var(--accent));
-            filter: blur(80px);
-            opacity: 0.3;
-            z-index: -1;
+        /* ── SECTIONS ── */
+        section { max-width:1100px; margin:0 auto; padding:0 1.5rem; }
+
+        .section-title {
+            font-size:0.7rem; font-family:'JetBrains Mono',monospace;
+            letter-spacing:3px; text-transform:uppercase;
+            color:var(--c1); margin-bottom:2rem;
+            padding-bottom:0.8rem;
+            border-bottom:1px solid var(--border);
         }
 
-        .showcase-inner img {
-            width: 100%;
-            height: auto;
-            border-radius: 20px;
-            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.8);
-            border: 1px solid var(--glass-border);
+        /* ── ABOUT ── */
+        .about { margin-bottom:100px; }
+        .about-grid {
+            display:grid; grid-template-columns:1fr 1fr; gap:3rem;
         }
-
-        /* --- Text & Lore Section --- */
-        .info-section {
-            max-width: 1000px;
-            margin: 0 auto 80px;
-            padding: 40px 2rem;
-            text-align: center;
-            background: var(--glass);
-            border: 1px solid var(--glass-border);
-            border-radius: 30px;
-            backdrop-filter: blur(10px);
+        .about-grid h2 {
+            font-size:2rem; font-weight:800; line-height:1.3;
+            color:#fff;
         }
+        .about-grid h2 em { font-style:normal; color:var(--c1); }
+        .about-text { color:var(--dim); line-height:1.8; font-size:1rem; }
+        .about-text p { margin-bottom:1rem; }
 
-        .info-section h2 {
-            font-size: 2.5rem;
-            margin-bottom: 1.5rem;
-            color: #fff;
+        /* ── FEATURES ── */
+        .features { margin-bottom:100px; }
+        .feat-grid {
+            display:grid; grid-template-columns:repeat(3,1fr); gap:1.5rem;
         }
-
-        .info-section p {
-            font-size: 1.15rem;
-            color: #cbd5e1;
-            line-height: 1.8;
-            margin-bottom: 1.5rem;
+        .feat {
+            padding:2rem; border-radius:12px;
+            background:var(--card); border:1px solid var(--border);
+            transition:all 0.3s;
         }
-
-        /* --- Características Grid --- */
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 2rem;
-            max-width: 1200px;
-            margin: 0 auto 80px;
-            padding: 0 1.5rem;
+        .feat:hover {
+            border-color:rgba(124,58,237,0.2);
+            background:rgba(124,58,237,0.04);
         }
-
-        .feature-card {
-            background: rgba(15, 23, 42, 0.6);
-            padding: 2.5rem;
-            border-radius: 24px;
-            border: 1px solid var(--glass-border);
-            backdrop-filter: blur(10px);
-            transition: 0.4s;
-            text-align: left;
+        .feat-num {
+            font-family:'JetBrains Mono',monospace;
+            font-size:0.7rem; color:var(--c2);
+            letter-spacing:1px; margin-bottom:1rem;
         }
-        .feature-card:hover { 
-            border-color: var(--primary); 
-            background: rgba(30, 41, 59, 0.8); 
-            transform: translateY(-10px); 
-            box-shadow: 0 15px 30px rgba(0, 120, 215, 0.15);
+        .feat h3 { font-size:1.1rem; font-weight:700; color:#fff; margin-bottom:0.6rem; }
+        .feat p { font-size:0.9rem; color:var(--dim); line-height:1.6; }
+
+        /* ── SPECS ── */
+        .specs { margin-bottom:100px; }
+        .spec-grid {
+            display:grid; grid-template-columns:1fr 1fr; gap:1.5rem;
         }
-        .feature-icon { font-size: 2.5rem; margin-bottom: 1rem; }
-        .feature-card h3 { color: #38bdf8; margin-bottom: 1rem; font-size: 1.4rem; }
-        .feature-card p { color: #94a3b8; line-height: 1.6; }
-
-        /* --- Info Grid (Requisitos) --- */
-        .req-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 2rem;
-            max-width: 1000px;
-            margin: 0 auto 80px;
-            padding: 0 1.5rem;
+        .spec-card {
+            padding:2rem; border-radius:12px;
+            background:var(--card); border:1px solid var(--border);
         }
-
-        .req-card {
-            background: var(--glass);
-            padding: 2.5rem;
-            border-radius: 24px;
-            border: 1px solid var(--glass-border);
-            transition: 0.3s;
+        .spec-card h3 {
+            font-size:0.8rem; letter-spacing:2px;
+            text-transform:uppercase; color:var(--c1);
+            margin-bottom:1.5rem; font-weight:700;
         }
-        .req-card h3 { color: #a855f7; margin-bottom: 1.5rem; font-size: 1.5rem; text-transform: uppercase; text-align: center;}
-        .req-card ul { list-style: none; color: #cbd5e1; font-size: 1.05rem; line-height: 2.2; }
-        .req-card ul li { display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.05); }
-        .req-card ul li strong { color: white; }
+        .spec-row {
+            display:flex; justify-content:space-between;
+            padding:0.6rem 0;
+            border-bottom:1px solid rgba(255,255,255,0.03);
+            font-size:0.95rem;
+        }
+        .spec-row span:first-child { color:var(--dim); }
+        .spec-row span:last-child { color:#fff; font-weight:500; }
 
-        footer { padding: 50px 20px; text-align: center; color: #475569; font-size: 0.9rem; border-top: 1px solid var(--glass-border); margin-top: 50px;}
+        /* ── FOOTER ── */
+        footer {
+            padding:3rem 1.5rem; text-align:center;
+            border-top:1px solid var(--border);
+            margin-top:40px;
+        }
+        footer p { font-size:0.8rem; color:var(--dim); }
+        footer a { color:var(--c1); text-decoration:none; }
 
-        @media (max-width: 768px) {
-            .hero { padding-top: 130px; }
-            .hero h1 { font-size: 2.8rem; }
-            .hero-buttons { flex-direction: column; }
-            .info-section h2 { font-size: 2rem; }
+        /* ── REVEAL ── */
+        .rv { opacity:0; transform:translateY(30px); transition:all 0.7s cubic-bezier(0.4,0,0,1); }
+        .rv.on { opacity:1; transform:translateY(0); }
+
+        /* ── RESPONSIVE ── */
+        @media(max-width:768px) {
+            .about-grid { grid-template-columns:1fr; gap:1.5rem; }
+            .feat-grid { grid-template-columns:1fr; }
+            .spec-grid { grid-template-columns:1fr; }
+            .hero h1 { font-size:2.4rem; }
         }
     </style>
 </head>
 <body>
 
-    <div id="stars-container"></div>
+<nav>
+    <div class="nav-brand">CREDI<span>PT</span></div>
+    <div class="nav-status">
+        <div class="dot loading" id="srv-dot"></div>
+        <span id="srv-text">Conectando...</span>
+    </div>
+</nav>
 
-    <nav>
-        <div class="logo">
-            <img src="electron-logo.png" alt="Credipt Logo">
-            <span>CREDIPT</span>
+<section class="hero">
+    <div class="tag">NeoForge 1.21.1 — Modded SMP</div>
+    <h1>La experiencia<br>que <em>mereces</em></h1>
+    <p class="hero-sub">Launcher propio, 150+ mods, optimización automática y sincronización en segundos. Solo dale a Jugar.</p>
+    <div class="hero-actions">
+        <a href="https://github.com/sanjti9123981/mc-launcher-versiones2/releases/download/1.6.1/Instalador_Credipt_Launcher.exe" class="btn-main">
+            Descargar Launcher
+        </a>
+        <a href="#about" class="btn-ghost">Saber más</a>
+    </div>
+</section>
+
+<div class="showcase rv">
+    <div class="showcase-frame">
+        <img src="launcher-main.png" alt="Credipt Launcher v1.6" loading="eager">
+        <div class="showcase-label">CREDIPT LAUNCHER V1.6</div>
+    </div>
+</div>
+
+<section class="about rv" id="about">
+    <div class="section-title">Sobre Credipt</div>
+    <div class="about-grid">
+        <h2>No es solo un servidor.<br>Es un <em>ecosistema</em> completo.</h2>
+        <div class="about-text">
+            <p>Credipt incluye un launcher que instala todo por ti: Java, mods, configuraciones optimizadas para tu hardware. Sin tutoriales, sin errores de versión, sin configurar RAM manualmente.</p>
+            <p>El servidor corre en infraestructura dedicada con G1GC optimizado, activation range dinámico y reinicios programados. Create, armas, dimensiones, vampiros — todo corriendo a 20 TPS constantes.</p>
         </div>
-    </nav>
+    </div>
+</section>
 
-    <main>
-        <section class="hero reveal active">
-            <h1>Bienvenido a Credipt</h1>
-            <p>El launcher y servidor definitivo. Hemos reescrito las reglas de la optimización para ofrecerte la experiencia multijugador más fluida, estable y avanzada que jamás hayas probado.</p>
-            
-            <div class="hero-buttons">
-                <a href="https://github.com/sanjti9123981/mc-launcher-versiones2/releases/download/1.6.1/Instalador_Credipt_Launcher.exe" class="btn">
-                    🚀 Descargar Launcher
-                </a>
-                <a href="#about" class="btn btn-secondary">
-                    Descubrir Más
-                </a>
-            </div>
+<section class="features rv">
+    <div class="section-title">Características</div>
+    <div class="feat-grid">
+        <div class="feat">
+            <div class="feat-num">01</div>
+            <h3>Instalación automática</h3>
+            <p>El launcher detecta tu sistema, descarga Java 21, sincroniza los mods y aplica flags de rendimiento adaptadas a tu PC.</p>
+        </div>
+        <div class="feat">
+            <div class="feat-num">02</div>
+            <h3>Anticheat integrado</h3>
+            <p>El launcher vigila la carpeta de mods en tiempo real. Cualquier archivo no autorizado se elimina automáticamente.</p>
+        </div>
+        <div class="feat">
+            <div class="feat-num">03</div>
+            <h3>Rendimiento real</h3>
+            <p>G1GC con flags adaptativas, Lithium, ModernFix, ServerCore con activation range. El servidor aguanta 30+ jugadores sin bajar de 20 TPS.</p>
+        </div>
+        <div class="feat">
+            <div class="feat-num">04</div>
+            <h3>Actualizaciones automáticas</h3>
+            <p>Cuando publicamos una nueva versión, el launcher avisa y se actualiza solo. Los mods se sincronizan sin que el jugador haga nada.</p>
+        </div>
+        <div class="feat">
+            <div class="feat-num">05</div>
+            <h3>150+ mods</h3>
+            <p>Create, SuperbWarfare, Vampirism, Aether, Born in Chaos, Cataclysm y muchos más. Todo probado y balanceado para funcionar junto.</p>
+        </div>
+        <div class="feat">
+            <div class="feat-num">06</div>
+            <h3>Tu config se respeta</h3>
+            <p>PlasmoVoice, Iris, keybinds — cambia lo que quieras. El launcher nunca sobreescribe tus configuraciones personales.</p>
+        </div>
+    </div>
+</section>
 
-            <div class="server-status">
-                <span class="status-dot"></span>
-                <span id="player-count">Conectando con Credipt Network...</span>
-            </div>
-        </section>
+<section class="specs rv">
+    <div class="section-title">Requisitos del sistema</div>
+    <div class="spec-grid">
+        <div class="spec-card">
+            <h3>Mínimos</h3>
+            <div class="spec-row"><span>Procesador</span><span>i3 7ª Gen / Ryzen 3</span></div>
+            <div class="spec-row"><span>RAM Total</span><span>6 GB</span></div>
+            <div class="spec-row"><span>RAM al juego</span><span>4 GB</span></div>
+            <div class="spec-row"><span>GPU</span><span>Integrada moderna</span></div>
+            <div class="spec-row"><span>Internet</span><span>Conexión estable</span></div>
+        </div>
+        <div class="spec-card">
+            <h3>Recomendados</h3>
+            <div class="spec-row"><span>Procesador</span><span>i5 8ª Gen+ / Ryzen 5</span></div>
+            <div class="spec-row"><span>RAM Total</span><span>12 — 16 GB</span></div>
+            <div class="spec-row"><span>RAM al juego</span><span>8 GB</span></div>
+            <div class="spec-row"><span>GPU</span><span>GTX 1650 / RX 570+</span></div>
+            <div class="spec-row"><span>Internet</span><span>Banda ancha</span></div>
+        </div>
+    </div>
+</section>
 
-        <section class="showcase reveal">
-            <div class="showcase-inner" id="tilt-box">
-                <img src="launcher-main.png" alt="Credipt Launcher Preview" loading="eager">
-            </div>
-        </section>
+<footer>
+    <p>&copy; 2026 Credipt Network — Desarrollado por <a href="#">Santiago</a></p>
+</footer>
 
-        <section id="about" class="info-section reveal">
-            <h2>¿Qué hace único a Credipt?</h2>
-            <p>No somos solo un modpack. <strong>Credipt</strong> es un ecosistema completo diseñado desde cero para jugadores exigentes. Nuestro launcher personalizado se comunica directamente con nuestros servidores de alto rendimiento, eliminando intermediarios.</p>
-            <p>Olvídate de buscar versiones de Forge, instalar Java o configurar memoria RAM. Nuestro software analiza tu PC y aplica la mejor configuración automáticamente. Solo dale a "Jugar" y nosotros hacemos el resto.</p>
-        </section>
-
-        <section class="features-grid">
-            <div class="feature-card reveal">
-                <div class="feature-icon">⚡</div>
-                <h3>Máximos FPS</h3>
-                <p>Nuestra pre-configuración incluye los mejores mods de rendimiento actuales. Menos consumo de RAM, cero tirones de carga y chunks que aparecen al instante.</p>
-            </div>
-            <div class="feature-card reveal">
-                <div class="feature-icon">🛠️</div>
-                <h3>Cero Complicaciones</h3>
-                <p>El launcher descarga y sincroniza los mods del servidor de forma automática. Si actualizamos el servidor, tu cliente se actualiza en segundos.</p>
-            </div>
-            <div class="feature-card reveal">
-                <div class="feature-icon">🛡️</div>
-                <h3>Conexión Premium</h3>
-                <p>Alojados en infraestructura de grado empresarial con protección DDoS activa. Ping estable y TPS perfectos para que tu supervivencia nunca se interrumpa.</p>
-            </div>
-        </section>
-
-        <section class="req-grid">
-            <div class="req-card reveal">
-                <h3>Requisitos Mínimos</h3>
-                <ul>
-                    <li><strong>Procesador</strong> <span>i3 8va Gen / Ryzen 3</span></li>
-                    <li><strong>Memoria RAM</strong> <span>4 GB - 5 GB</span></li>
-                    <li><strong>Gráficos</strong> <span>Integrados modernos</span></li>
-                    <li><strong>Internet</strong> <span>Conexión estable</span></li>
-                </ul>
-            </div>
-            <div class="req-card reveal">
-                <h3>Requisitos Recomendados</h3>
-                <ul>
-                    <li><strong>Procesador</strong> <span>i5 10ma Gen / Ryzen 5+</span></li>
-                    <li><strong>Memoria RAM</strong> <span>8 GB - 12 GB</span></li>
-                    <li><strong>Gráficos</strong> <span>GTX 1650 / RX 570+</span></li>
-                    <li><strong>Internet</strong> <span>Banda Ancha</span></li>
-                </ul>
-            </div>
-        </section>
-    </main>
-
-    <footer>
-        &copy; 2026 Credipt Network | Desarrollado por Santiago
-    </footer>
-
-    <script>
-        // --- API de Minecraft (Jugadores Conectados a Credipt) ---
-        function updateServerStatus() {
-            const serverIP = '104.224.55.73:25565';
-            const countText = document.getElementById('player-count');
-            const dot = document.querySelector('.status-dot');
-
-            fetch(`https://api.mcsrvstat.us/2/${serverIP}`)
-                .then(response => response.json())
-                .then(data => {
-                    if (data.online) {
-                        countText.innerHTML = `<strong>${data.players.online}</strong> jugadores en línea en Credipt`;
-                        dot.style.backgroundColor = "#22c55e"; 
-                        dot.style.boxShadow = "0 0 15px #22c55e";
-                    } else {
-                        countText.innerText = "Servidor en mantenimiento / Reiniciando";
-                        dot.style.backgroundColor = "#ef4444"; 
-                        dot.style.boxShadow = "0 0 15px #ef4444";
-                    }
-                })
-                .catch(error => {
-                    countText.innerText = "Analizando estado del servidor...";
-                    dot.style.backgroundColor = "#f59e0b"; 
-                    dot.style.boxShadow = "0 0 15px #f59e0b";
-                });
-        }
-        
-        updateServerStatus();
-        setInterval(updateServerStatus, 60000);
-
-        // --- Sistema de Animación al hacer Scroll (Reveal) ---
-        function revealOnScroll() {
-            const reveals = document.querySelectorAll('.reveal');
-            const windowHeight = window.innerHeight;
-            const elementVisible = 100;
-
-            reveals.forEach((reveal) => {
-                const elementTop = reveal.getBoundingClientRect().top;
-                if (elementTop < windowHeight - elementVisible) {
-                    reveal.classList.add('active');
-                }
-            });
-        }
-        window.addEventListener('scroll', revealOnScroll);
-        revealOnScroll(); // Trigger inicial
-
-        // --- Estrellas Optimizadas ---
-        function createStars() {
-            const container = document.getElementById('stars-container');
-            const fragment = document.createDocumentFragment();
-            const count = window.innerWidth < 768 ? 35 : 60; 
-
-            for(let i=0; i < count; i++) {
-                const star = document.createElement('div');
-                star.className = 'star';
-                const size = Math.random() * 3 + 1;
-                star.style.width = `${size}px`;
-                star.style.height = `${size}px`;
-                star.style.left = `${Math.random() * 100}vw`;
-                star.style.top = `${Math.random() * 100}vh`;
-                star.style.animation = `fall ${Math.random() * 15 + 8}s linear infinite`;
-                star.style.animationDelay = `${Math.random() * 5}s`;
-                fragment.appendChild(star);
+<script>
+// ── Server status ──
+function updateStatus() {
+    const dot = document.getElementById('srv-dot');
+    const txt = document.getElementById('srv-text');
+    fetch('https://api.mcsrvstat.us/2/104.224.55.73:25565')
+        .then(r => r.json())
+        .then(d => {
+            if (d.online) {
+                dot.className = 'dot';
+                txt.textContent = d.players.online + ' / ' + d.players.max + ' en línea';
+            } else {
+                dot.className = 'dot off';
+                txt.textContent = 'Servidor reiniciando';
             }
-            container.appendChild(fragment);
-        }
-        createStars();
-
-        // --- Efecto de Inclinación (Tilt) ---
-        const box = document.getElementById('tilt-box');
-        let ticker = false;
-
-        document.addEventListener('mousemove', (e) => {
-            if (!ticker) {
-                requestAnimationFrame(() => {
-                    const x = (window.innerWidth / 2 - e.pageX) / 50;
-                    const y = (window.innerHeight / 2 - e.pageY) / 50;
-                    box.style.transform = `rotateY(${-x}deg) rotateX(${y}deg)`;
-                    ticker = false;
-                });
-                ticker = true;
-            }
+        })
+        .catch(() => {
+            dot.className = 'dot loading';
+            txt.textContent = 'Sin conexión';
         });
-    </script>
+}
+updateStatus();
+setInterval(updateStatus, 30000);
+
+// ── Scroll reveal ──
+const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('on'); });
+}, { threshold: 0.15 });
+document.querySelectorAll('.rv').forEach(el => obs.observe(el));
+</script>
 </body>
 </html>
